@@ -6,8 +6,11 @@ RUN apk add --no-cache bind-tools
 
 # Override detect-external-ip.sh script
 COPY ./detect-external-ip.sh /usr/local/bin/detect-external-ip.sh
-RUN chmod +x /usr/local/bin/detect-external-ip.sh && \
-    chown -R nobody:nogroup /var/lib/coturn/
+COPY ./docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+
+RUN chmod +x /usr/local/bin/detect-external-ip.sh /usr/local/bin/docker-entrypoint.sh && \
+    chown -R nobody:nogroup /var/lib/coturn/ && \
+    touch /turnserver.conf && chown nobody:nogroup /turnserver.conf
 
 USER nobody:nogroup
 ENTRYPOINT ["docker-entrypoint.sh"]
