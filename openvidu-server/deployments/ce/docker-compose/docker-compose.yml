@@ -87,7 +87,7 @@ services:
             - --listening-port=3478
             - --fingerprint
             - --lt-cred-mech
-            - --min-port=40000
+            - --min-port=57001
             - --max-port=65535
             - --realm=openvidu
             - --verbose
