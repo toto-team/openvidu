@@ -156,7 +156,7 @@ public class ComposedRecordingService extends RecordingService {
 		envs.add("FRAMERATE=" + properties.frameRate());
 		envs.add("VIDEO_ID=" + recording.getId());
 		envs.add("VIDEO_NAME=" + properties.name());
-		envs.add("VIDEO_FORMAT=mp4");
+		envs.add("VIDEO_FORMAT=mkv");
 		envs.add("RECORDING_JSON=" + recording.toJson(true).toString());
 
 		log.info(recording.toJson(true).toString());

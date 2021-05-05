@@ -79,7 +79,7 @@ public class ComposedQuickStartRecordingService extends ComposedRecordingService
 		envs.add("ONLY_VIDEO=" + !properties.hasAudio());
 		envs.add("VIDEO_ID=" + recording.getId());
 		envs.add("VIDEO_NAME=" + properties.name());
-		envs.add("VIDEO_FORMAT=mp4");
+		envs.add("VIDEO_FORMAT=mkv");
 		envs.add("RECORDING_JSON='" + recording.toJson(true).toString() + "'");
 
 		String containerId = this.sessionsContainers.get(session.getSessionId());
