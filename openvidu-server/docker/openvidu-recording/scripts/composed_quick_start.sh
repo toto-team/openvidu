@@ -72,7 +72,7 @@ elif [[ "${COMPOSED_QUICK_START_ACTION}" == "--start-recording" ]]; then
         export FRAMERATE=${FRAMERATE:-25}
         export VIDEO_ID=${VIDEO_ID:-video}
         export VIDEO_NAME=${VIDEO_NAME:-video}
-        export VIDEO_FORMAT=${VIDEO_FORMAT:-mp4}
+        export VIDEO_FORMAT=${VIDEO_FORMAT:-mkv}
         export RECORDING_JSON="${RECORDING_JSON}"
 
         echo "==== Loaded Environment Variables - Start Recording ====="

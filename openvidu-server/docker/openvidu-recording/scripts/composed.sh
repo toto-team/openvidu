@@ -17,7 +17,7 @@ fi
   HEIGHT="$(cut -d'x' -f2 <<< $RESOLUTION)"
   VIDEO_ID=${VIDEO_ID:-video}
   VIDEO_NAME=${VIDEO_NAME:-video}
-  VIDEO_FORMAT=${VIDEO_FORMAT:-mp4}
+  VIDEO_FORMAT=${VIDEO_FORMAT:-mkv}
   RECORDING_JSON="${RECORDING_JSON}"
 
   export URL
