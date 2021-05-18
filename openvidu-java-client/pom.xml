@@ -57,7 +57,7 @@
 		<repository>
 			<id>github</id>
 			<name>GitHub toto-team Apache Maven Packages</name>
-			<url>https://maven.pkg.github.com/toto-team/golive-parent</url>
+			<url>https://maven.pkg.github.com/toto-team/openvidu</url>
 		</repository>
 	</distributionManagement>
 
