@@ -59,15 +59,12 @@
 			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
 		</snapshotRepository>
 		<repository>
-			<id>ossrh</id>
-			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-		</repository>
-		<repository>
 			<id>github</id>
 			<name>GitHub toto-team Apache Maven Packages</name>
-			<url>https://maven.pkg.github.com/toto-team/openvidu</url>
+			<url>https://maven.pkg.github.com/toto-team/golive-parent</url>
 		</repository>
 	</distributionManagement>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
