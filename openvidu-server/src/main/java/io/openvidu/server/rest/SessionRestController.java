@@ -725,12 +725,14 @@ public class SessionRestController {
 			String recordingModeString;
 			String forcedVideoCodec;
 			Boolean allowTranscoding;
+			String rtmpLink;
 			try {
 				mediaModeString = (String) params.get("mediaMode");
 				recordingModeString = (String) params.get("recordingMode");
 				customSessionId = (String) params.get("customSessionId");
 				forcedVideoCodec = (String) params.get("forcedVideoCodec");
 				allowTranscoding = (Boolean) params.get("allowTranscoding");
+				rtmpLink=(String) params.get("rtmpLink");
 			} catch (ClassCastException e) {
 				throw new Exception("Type error in some parameter: " + e.getMessage());
 			}
@@ -766,7 +768,9 @@ public class SessionRestController {
 				} else {
 					builder = builder.allowTranscoding(openviduConfig.isOpenviduAllowingTranscoding());
 				}
-
+				if(rtmpLink!=null){
+					builder=builder.rtmpLink(rtmpLink);
+				}
 				JsonObject defaultRecordingPropertiesJson = null;
 				if (params.get("defaultRecordingProperties") != null) {
 					try {

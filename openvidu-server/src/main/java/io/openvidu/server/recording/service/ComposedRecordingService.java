@@ -148,7 +148,7 @@ public class ComposedRecordingService extends RecordingService {
 		List<String> envs = new ArrayList<>();
 
 		String layoutUrl = this.getLayoutUrl(recording);
-
+		System.out.println("+++++++++++++++++++"+session.getSessionProperties().rtmpLink());
 		envs.add("DEBUG_MODE=" + openviduConfig.isOpenViduRecordingDebug());
 		envs.add("URL=" + layoutUrl);
 		envs.add("ONLY_VIDEO=" + !properties.hasAudio());
@@ -158,7 +158,7 @@ public class ComposedRecordingService extends RecordingService {
 		envs.add("VIDEO_NAME=" + properties.name());
 		envs.add("VIDEO_FORMAT=mkv");
 		envs.add("RECORDING_JSON=" + recording.toJson(true).toString());
-
+		envs.add("RTMP_YOUTUBE_LINK=" + session.getSessionProperties().rtmpLink());
 		log.info(recording.toJson(true).toString());
 		log.info("Recorder connecting to url {}", layoutUrl);
 

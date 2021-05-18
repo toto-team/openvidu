@@ -17,9 +17,9 @@ fi
   HEIGHT="$(cut -d'x' -f2 <<< $RESOLUTION)"
   VIDEO_ID=${VIDEO_ID:-video}
   VIDEO_NAME=${VIDEO_NAME:-video}
-  VIDEO_FORMAT=${VIDEO_FORMAT:-mkv}
+  VIDEO_FORMAT=${VIDEO_FORMAT:-mp4}
   RECORDING_JSON="${RECORDING_JSON}"
-
+  RTMP_YOUTUBE_LINK=${RTMP_YOUTUBE_LINK}
   export URL
   export ONLY_VIDEO
   export RESOLUTION
@@ -30,7 +30,7 @@ fi
   export VIDEO_NAME
   export VIDEO_FORMAT
   export RECORDING_JSON
-  
+  export RTMP_YOUTUBE_LINK
   echo "==== Loaded Environment Variables ======================="
   env
   echo "========================================================="
@@ -69,14 +69,13 @@ fi
   sleep 2
 
   ### Start recording with ffmpeg ###
-
   if [[ "$ONLY_VIDEO" == true ]]
     then
       # Do not record audio
-      <./stop ffmpeg -y -f x11grab -draw_mouse 0 -framerate $FRAMERATE -video_size $RESOLUTION -i :$DISPLAY_NUM -c:v libx264 -preset ultrafast -crf 28 -refs 4 -qmin 4 -pix_fmt yuv420p -filter:v fps=$FRAMERATE "/recordings/$VIDEO_ID/$VIDEO_NAME.$VIDEO_FORMAT"
+      <./stop ffmpeg -y -f x11grab -draw_mouse 0 -framerate $FRAMERATE -video_size $RESOLUTION -i :$DISPLAY_NUM -c:v libx264 -preset ultrafast -crf 28 -refs 4 -qmin 4 -pix_fmt yuv420p -filter:v fps=$FRAMERATE "/recordings/$VIDEO_ID/$VIDEO_NAME.$VIDEO_FORMAT" -f flv $RTMP_YOUTUBE_LINK
     else
       # Record audio  ("-f alsa -i pulse [...] -c:a aac")
-      <./stop ffmpeg -y -f alsa -i pulse -f x11grab -draw_mouse 0 -framerate $FRAMERATE -video_size $RESOLUTION -i :$DISPLAY_NUM -c:a aac -c:v libx264 -preset ultrafast -crf 28 -refs 4 -qmin 4 -pix_fmt yuv420p -filter:v fps=$FRAMERATE "/recordings/$VIDEO_ID/$VIDEO_NAME.$VIDEO_FORMAT"
+      <./stop ffmpeg -y -f alsa -i pulse -f x11grab -draw_mouse 0 -framerate $FRAMERATE -video_size $RESOLUTION -i :$DISPLAY_NUM -c:a aac -c:v libx264 -preset ultrafast -crf 28 -refs 4 -qmin 4 -pix_fmt yuv420p -filter:v fps=$FRAMERATE "/recordings/$VIDEO_ID/$VIDEO_NAME.$VIDEO_FORMAT" -f flv $RTMP_YOUTUBE_LINK
   fi
 
   ### Generate video report file ###
