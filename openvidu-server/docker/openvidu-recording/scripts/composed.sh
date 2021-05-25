@@ -20,6 +20,7 @@ fi
   VIDEO_FORMAT=${VIDEO_FORMAT:-mp4}
   RECORDING_JSON="${RECORDING_JSON}"
   RTMP_YOUTUBE_LINK=${RTMP_YOUTUBE_LINK}
+  RTMP_FACEBOOK_LINK=${RTMP_FACEBOOK_LINK}
   export URL
   export ONLY_VIDEO
   export RESOLUTION
@@ -31,6 +32,7 @@ fi
   export VIDEO_FORMAT
   export RECORDING_JSON
   export RTMP_YOUTUBE_LINK
+  export RTMP_FACEBOOK_LINK
   echo "==== Loaded Environment Variables ======================="
   env
   echo "========================================================="

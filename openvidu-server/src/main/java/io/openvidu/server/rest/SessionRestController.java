@@ -18,14 +18,12 @@
 package io.openvidu.server.rest;
 
 import java.net.MalformedURLException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
+import io.openvidu.java.client.*;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,17 +49,7 @@ import com.google.gson.JsonParser;
 import io.openvidu.client.OpenViduException;
 import io.openvidu.client.OpenViduException.Code;
 import io.openvidu.client.internal.ProtocolElements;
-import io.openvidu.java.client.ConnectionProperties;
-import io.openvidu.java.client.ConnectionType;
-import io.openvidu.java.client.KurentoOptions;
-import io.openvidu.java.client.MediaMode;
-import io.openvidu.java.client.OpenViduRole;
 import io.openvidu.java.client.Recording.OutputMode;
-import io.openvidu.java.client.RecordingLayout;
-import io.openvidu.java.client.RecordingMode;
-import io.openvidu.java.client.RecordingProperties;
-import io.openvidu.java.client.SessionProperties;
-import io.openvidu.java.client.VideoCodec;
 import io.openvidu.server.config.OpenviduConfig;
 import io.openvidu.server.core.EndReason;
 import io.openvidu.server.core.IdentifierPrefixes;
@@ -725,14 +713,14 @@ public class SessionRestController {
 			String recordingModeString;
 			String forcedVideoCodec;
 			Boolean allowTranscoding;
-			String rtmpLink;
+			List<RtmpLink> rtmpLinks;
 			try {
 				mediaModeString = (String) params.get("mediaMode");
 				recordingModeString = (String) params.get("recordingMode");
 				customSessionId = (String) params.get("customSessionId");
 				forcedVideoCodec = (String) params.get("forcedVideoCodec");
 				allowTranscoding = (Boolean) params.get("allowTranscoding");
-				rtmpLink=(String) params.get("rtmpLink");
+				rtmpLinks=(List<RtmpLink>) params.get("rtmpLinks");
 			} catch (ClassCastException e) {
 				throw new Exception("Type error in some parameter: " + e.getMessage());
 			}
@@ -768,8 +756,8 @@ public class SessionRestController {
 				} else {
 					builder = builder.allowTranscoding(openviduConfig.isOpenviduAllowingTranscoding());
 				}
-				if(rtmpLink!=null){
-					builder=builder.rtmpLink(rtmpLink);
+				if(rtmpLinks!=null){
+					builder=builder.rtmpLinks(rtmpLinks);
 				}
 				JsonObject defaultRecordingPropertiesJson = null;
 				if (params.get("defaultRecordingProperties") != null) {

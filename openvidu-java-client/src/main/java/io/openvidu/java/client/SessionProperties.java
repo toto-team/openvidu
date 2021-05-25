@@ -19,6 +19,9 @@ package io.openvidu.java.client;
 
 import com.google.gson.JsonObject;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * See {@link io.openvidu.java.client.OpenVidu#createSession(SessionProperties)}
  */
@@ -31,7 +34,7 @@ public class SessionProperties {
 	private String mediaNode;
 	private VideoCodec forcedVideoCodec;
 	private Boolean allowTranscoding;
-	private String rtmpLink;
+	private List<RtmpLink> rtmpLinks;
 
 	/**
 	 * Builder for {@link io.openvidu.java.client.SessionProperties}
@@ -45,14 +48,14 @@ public class SessionProperties {
 		private String mediaNode;
 		private VideoCodec forcedVideoCodec = VideoCodec.VP8;
 		private Boolean allowTranscoding = false;
-		private String rtmpLink;
+		private List<RtmpLink> rtmpLinks;
 		/**
 		 * Returns the {@link io.openvidu.java.client.SessionProperties} object properly
 		 * configured
 		 */
 		public SessionProperties build() {
 			return new SessionProperties(this.mediaMode, this.recordingMode, this.defaultRecordingProperties,
-					this.customSessionId, this.mediaNode, this.forcedVideoCodec, this.allowTranscoding,this.rtmpLink);
+					this.customSessionId, this.mediaNode, this.forcedVideoCodec, this.allowTranscoding,this.rtmpLinks);
 		}
 
 		/**
@@ -144,8 +147,8 @@ public class SessionProperties {
 		 * You can take advantage of this property to facilitate the mapping between
 		 * OpenVidu Server 'session' entities and your own 'session' entities.
 		 */
-		public SessionProperties.Builder rtmpLink(String rtmpLink){
-			this.rtmpLink=rtmpLink;
+		public SessionProperties.Builder rtmpLinks(List<RtmpLink> rtmpLinks){
+			this.rtmpLinks=rtmpLinks;
 			return this;
 		}
 	}
@@ -156,7 +159,7 @@ public class SessionProperties {
 		this.defaultRecordingProperties = new RecordingProperties.Builder().build();
 		this.customSessionId = "";
 		this.mediaNode = "";
-		this.rtmpLink="";
+		this.rtmpLinks=new ArrayList<>();
 	}
 
 	private SessionProperties(MediaMode mediaMode, RecordingMode recordingMode,
@@ -173,9 +176,9 @@ public class SessionProperties {
 
 	private SessionProperties(MediaMode mediaMode, RecordingMode recordingMode,
 							  RecordingProperties defaultRecordingProperties, String customSessionId, String mediaNode,
-							  VideoCodec forcedVideoCodec, Boolean allowTranscoding,String rtmpLink) {
+							  VideoCodec forcedVideoCodec, Boolean allowTranscoding,List<RtmpLink> rtmpLinks) {
 		this(mediaMode,recordingMode,defaultRecordingProperties,customSessionId,mediaNode,forcedVideoCodec,allowTranscoding);
-		this.rtmpLink=rtmpLink;
+		this.rtmpLinks=rtmpLinks;
 	}
 
 	/**
@@ -245,8 +248,8 @@ public class SessionProperties {
 		return this.allowTranscoding;
 	}
 
-	public String rtmpLink(){
-		return this.rtmpLink;
+	public List<RtmpLink> rtmpLinks(){
+		return this.rtmpLinks;
 	}
 
 	protected JsonObject toJson() {
@@ -266,8 +269,8 @@ public class SessionProperties {
 		if (isTranscodingAllowed() != null) {
 			json.addProperty("allowTranscoding", isTranscodingAllowed());
 		}
-		if(rtmpLink()!=null){
-			json.addProperty("rtmpLink", rtmpLink());
+		if(rtmpLinks()!=null){
+			json.addProperty("rtmpLinks", rtmpLinks().toString());
 		}
 		return json;
 	}
