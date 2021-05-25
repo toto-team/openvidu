@@ -27,4 +27,12 @@ public class RtmpLink {
     public void setRtmpLink(String rtmpLink) {
         this.rtmpLink = rtmpLink;
     }
+
+    @Override
+    public String toString() {
+        return "RtmpLink{" +
+                "socialProvider=" + socialProvider +
+                ", rtmpLink='" + rtmpLink + '\'' +
+                '}';
+    }
 }

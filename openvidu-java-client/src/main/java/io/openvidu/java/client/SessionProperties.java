@@ -17,6 +17,8 @@
 
 package io.openvidu.java.client;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
@@ -254,6 +256,7 @@ public class SessionProperties {
 
 	protected JsonObject toJson() {
 		JsonObject json = new JsonObject();
+		Gson gson = new GsonBuilder().setPrettyPrinting().create();
 		json.addProperty("mediaMode", mediaMode().name());
 		json.addProperty("recordingMode", recordingMode().name());
 		json.addProperty("customSessionId", customSessionId());
@@ -270,7 +273,7 @@ public class SessionProperties {
 			json.addProperty("allowTranscoding", isTranscodingAllowed());
 		}
 		if(rtmpLinks()!=null){
-			json.addProperty("rtmpLinks", rtmpLinks().toString());
+			json.addProperty("rtmpLinks", gson.toJson(rtmpLinks()));
 		}
 		return json;
 	}
