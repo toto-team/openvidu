@@ -70,6 +70,7 @@ public class Session {
 		this.resetWithJson(json);
 	}
 
+
 	/**
 	 * Gets the unique identifier of the Session.
 	 *
