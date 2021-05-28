@@ -32,6 +32,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
+import io.openvidu.java.client.RtmpLink;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.slf4j.Logger;
@@ -157,7 +158,18 @@ public class ComposedRecordingService extends RecordingService {
 		envs.add("VIDEO_NAME=" + properties.name());
 		envs.add("VIDEO_FORMAT=mkv");
 		envs.add("RECORDING_JSON=" + recording.toJson(true).toString());
-		this.addRtmpLinksEnvs(envs,session.getSessionProperties().rtmpLinks());
+		session.getSessionProperties().rtmpLinks().forEach(rtmpLink -> {
+			switch (rtmpLink.getSocialProvider()){
+				case google:
+					System.out.println("env google=====> "+rtmpLink.getRtmpLink());
+					envs.add("RTMP_YOUTUBE_LINK=" + rtmpLink.getRtmpLink());
+					break;
+				case facebook:
+					System.out.println("env facebook=====> "+rtmpLink.getRtmpLink());
+					envs.add("RTMP_FACEBOOK_LINK=" + rtmpLink.getRtmpLink());
+					break;
+			}
+		});
 		log.info(recording.toJson(true).toString());
 		log.info("Recorder connecting to url {}", layoutUrl);
 

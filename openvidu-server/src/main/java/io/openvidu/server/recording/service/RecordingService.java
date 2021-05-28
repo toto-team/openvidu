@@ -233,18 +233,6 @@ public abstract class RecordingService {
 		return recordingUploader.isBeingUploaded(recording.getId());
 	}
 
-    protected void addRtmpLinksEnvs(List<String> envs, List<RtmpLink> rtmpLinks) {
-		rtmpLinks.forEach(rtmpLink -> {
-			switch (rtmpLink.getSocialProvider()){
-				case google:
-					envs.add("RTMP_YOUTUBE_LINK=" + rtmpLink.getRtmpLink());
-					break;
-				case facebook:
-					envs.add("RTMP_FACEBOOK_LINK=" + rtmpLink.getRtmpLink());
-					break;
-			}
-		});
-    }
 
     /**
 	 * Simple wrapper for returning update RecordingProperties and a free

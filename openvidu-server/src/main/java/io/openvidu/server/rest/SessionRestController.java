@@ -23,6 +23,8 @@ import java.util.Map.Entry;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
+import com.google.common.reflect.TypeToken;
+import com.google.gson.stream.JsonReader;
 import io.openvidu.java.client.*;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.slf4j.Logger;
@@ -92,6 +94,7 @@ public class SessionRestController {
 		SessionProperties sessionProperties;
 		try {
 			sessionProperties = getSessionPropertiesFromParams(params).build();
+			sessionProperties.rtmpLinks().forEach(value-> System.out.println("2:"+value.getSocialProvider().toString()+"===>"+value.getRtmpLink()));
 		} catch (Exception e) {
 			return this.generateErrorResponse(e.getMessage(), "/sessions", HttpStatus.BAD_REQUEST);
 		}
@@ -706,7 +709,8 @@ public class SessionRestController {
 
 		SessionProperties.Builder builder = new SessionProperties.Builder();
 		String customSessionId = null;
-
+		Gson gson = new GsonBuilder().setPrettyPrinting().create();
+		TypeToken<List<RtmpLink>> token = new TypeToken<List<RtmpLink>>() {};
 		if (params != null) {
 
 			String mediaModeString;
@@ -720,7 +724,8 @@ public class SessionRestController {
 				customSessionId = (String) params.get("customSessionId");
 				forcedVideoCodec = (String) params.get("forcedVideoCodec");
 				allowTranscoding = (Boolean) params.get("allowTranscoding");
-				rtmpLinks=(List<RtmpLink>) params.get("rtmpLinks");
+				rtmpLinks= gson.fromJson((String) params.get("rtmpLinks"),token.getType());
+				rtmpLinks.forEach(value-> System.out.println(value.getSocialProvider().toString()+"=====>"+value.getRtmpLink()));
 			} catch (ClassCastException e) {
 				throw new Exception("Type error in some parameter: " + e.getMessage());
 			}
