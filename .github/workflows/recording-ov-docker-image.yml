@@ -1,0 +1,16 @@
+name: OV record docker image
+
+on: push
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Exec sh
+        run: ./openvidu-server/docker/openvidu-recording/test.sh
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
