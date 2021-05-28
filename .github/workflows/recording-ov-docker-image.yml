@@ -10,12 +10,20 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: change dierctory
-        run: cd openvidu-server/docker/openvidu-recording
-
       - name: Exec sh
-        run: ./create_image.sh ubuntu-20-04 86.0.4240.193-1 2.17.0
+        run: |
+          cd openvidu-server/docker/openvidu-recording
+          ./create_image.sh ubuntu-20-04 86.0.4240.193-1 2.17.0
 
+      - name: docker tag
+        run: docker tag openvidu/openvidu-recording:2.17.0 ghcr.io/toto-team/golive-parent/openvidu/openvidu-recording:2.17.0
 
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Push image docker
+        run: docker push ghcr.io/toto-team/golive-parent/openvidu/openvidu-recording:2.17.0
         env:
           GITHUB_TOKEN: ${{ github.token }}
