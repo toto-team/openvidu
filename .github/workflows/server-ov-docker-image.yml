@@ -13,6 +13,10 @@ jobs:
         run: |
           cd openvidu-client
           mvn clean install -DskipTests
+      - name: mvn install for ov java client
+        run: |
+            cd openvidu-java-client
+            mvn clean install -DskipTests
       - name: mvn install for ov server
         run: |
           cd openvidu-server
