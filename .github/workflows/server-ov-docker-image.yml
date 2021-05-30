@@ -9,10 +9,10 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - name: mvn install for ov server
-          run: |
-            cd openvidu-client
-            mvn clean install -DskipTests
+      - name: mvn install for ov client
+        run: |
+          cd openvidu-client
+          mvn clean install -DskipTests
       - name: mvn install for ov server
         run: |
           cd openvidu-server
