@@ -49,6 +49,13 @@
 		<!-- Main class -->
 		<start-class>io.openvidu.server.OpenViduServer</start-class>
 	</properties>
+	<distributionManagement>
+		<repository>
+			<id>github</id>
+			<name>GitHub toto-team Apache Maven Packages</name>
+			<url>https://maven.pkg.github.com/toto-team/openvidu</url>
+		</repository>
+	</distributionManagement>
 
 	<profiles>
 
