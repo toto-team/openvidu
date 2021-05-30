@@ -9,6 +9,9 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+      - name: mvn install for ov
+        run: |
+          mvn clean install -DskipTests
       - name: mvn install for ov client
         run: |
           cd openvidu-client
