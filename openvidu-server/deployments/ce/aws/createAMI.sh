@@ -49,7 +49,7 @@ sed -i "s/AMIUSEAST2/${AMIUSEAST2}/g" cfn-mkt-ov-ce-ami.yaml
 
 # Copy template to S3
 aws s3 cp cfn-mkt-ov-ce-ami.yaml s3://elasticbeanstalk-us-east-2-160178507710
-TEMPLATE_URL=https://s3-us-east-2.amazonaws.com/elasticbeanstalk-us-east-2-160178507710/cfn-mkt-ov-ce-ami.yaml
+TEMPLATE_URL=https://elasticbeanstalk-us-east-2-160178507710.s3.us-east-2.amazonaws.com/cfn-mkt-ov-ce-ami.yaml
 
 # Update installation script
 if [[ ${UPDATE_INSTALLATION_SCRIPT:-true} == "true" ]]; then
