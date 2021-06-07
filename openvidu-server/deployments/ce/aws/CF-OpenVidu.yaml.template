@@ -118,7 +118,7 @@ Parameters:
 #start_mappings
 Mappings:
   OVAMIMAP:
-    eu-west-1:
+    us-east-2:
       AMI: OV_AMI_ID
 #end_mappings
 
@@ -334,7 +334,7 @@ Resources:
           /usr/local/bin/cfn-hup -v || { echo "[OpenVidu] Failed to start cfn-hup"; exit 1; }
 
           # sending the finish call
-          /usr/local/bin/cfn-signal -e $? --stack ${AWS::StackId} --resource WaitCondition --region ${AWS::Region}
+          #/usr/local/bin/cfn-signal -e $? --stack ${AWS::StackId} --resource WaitCondition --region ${AWS::Region}
 
       BlockDeviceMappings:
         - DeviceName: /dev/sda1
@@ -350,12 +350,7 @@ Resources:
       InstanceId: !Ref OpenviduServer
       EIP: !Ref PublicElasticIP
 
-  WaitCondition:
-    Type: 'AWS::CloudFormation::WaitCondition'
-    CreationPolicy:
-      ResourceSignal:
-        Timeout: PT30M
-        Count: '1'
+
 
   WebServerSecurityGroup:
     Type: 'AWS::EC2::SecurityGroup'

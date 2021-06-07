@@ -73,7 +73,7 @@ Resources:
 
                 # Install openvidu-ce
                 cd /opt
-                curl https://s3-eu-west-1.amazonaws.com/aws.openvidu.io/install_openvidu_OPENVIDU_VERSION.sh | bash
+                curl https://s3-us-east-2.amazonaws.com/lasticbeanstalk-us-east-2-160178507710/install_openvidu_OPENVIDU_VERSION.sh | bash
 
                 # Define Installation Type
                 sed -i "s/Installation Mode: On Premises/Installation Mode: Cloud Formation/" /opt/openvidu/docker-compose.yml
