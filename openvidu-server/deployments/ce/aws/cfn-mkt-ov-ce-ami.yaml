@@ -5,9 +5,9 @@ Description: Openvidu Server CE CloudFormation AMI template.
 Mappings:
   AMIMAP:
     eu-west-1:
-      AMI: AMIEUWEST1
+      AMI: ami-0f5b07b31937d4275
     us-east-2:
-      AMI: AMIUSEAST2
+      AMI: ami-063e88ad6c9af427d
 
 Resources:
   OpenviduServerCE:
@@ -92,8 +92,8 @@ Resources:
                 set -eu -o pipefail
 
                 # Openvidu recording
-                docker pull ghcr.io/toto-team/openvidu/openvidu-recording:2.17.0
-                docker tag ghcr.io/toto-team/openvidu/openvidu-recording:2.17.0 openvidu/openvidu-recording:2.17.0
+                docker pull openvidu/openvidu-recording:OPENVIDU_RECORDING_DOCKER_TAG
+
                 # OpenVidu CE images
                 cd /opt/openvidu
                 docker-compose pull
@@ -106,7 +106,7 @@ Resources:
       Tags:
         - Key: Name
           Value: !Ref AWS::StackName
-      KeyName: AWS_KEY_NAME
+      KeyName: cloudysteam
       UserData:
         "Fn::Base64":
           !Sub |

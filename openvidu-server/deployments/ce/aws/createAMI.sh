@@ -57,7 +57,7 @@ if [[ ${UPDATE_INSTALLATION_SCRIPT:-true} == "true" ]]; then
   # Only master and non existing versions can be overriden
   if [[ ${OPENVIDU_VERSION:-2.17.0} != "master" ]]; then
     INSTALL_SCRIPT_EXISTS=true
-    aws s3api head-object --bucket lasticbeanstalk-us-east-2-160178507710 --key install_openvidu_2.17.0.sh || INSTALL_SCRIPT_EXISTS=false
+    aws s3api head-object --bucket elasticbeanstalk-us-east-2-160178507710 --key install_openvidu_2.17.0.sh || INSTALL_SCRIPT_EXISTS=false
     if [[ ${INSTALL_SCRIPT_EXISTS} == "true" ]]; then
       echo "Aborting updating s3://lasticbeanstalk-us-east-2-160178507710/install_openvidu_2.17.0.sh. File actually exists."
       exit 1
