@@ -350,7 +350,12 @@ Resources:
       InstanceId: !Ref OpenviduServer
       EIP: !Ref PublicElasticIP
 
-
+  WaitCondition:
+      Type: 'AWS::CloudFormation::WaitCondition'
+      CreationPolicy:
+        ResourceSignal:
+          Timeout: PT30M
+          Count: '1'
 
   WebServerSecurityGroup:
     Type: 'AWS::EC2::SecurityGroup'
