@@ -158,7 +158,7 @@ public class ComposedRecordingService extends RecordingService {
 		envs.add("VIDEO_NAME=" + properties.name());
 		envs.add("VIDEO_FORMAT=mkv");
 		envs.add("RECORDING_JSON=" + recording.toJson(true).toString());
-		session.getSessionProperties().rtmpLinks().forEach(rtmpLink -> {
+		properties.rtmpLinks().forEach(rtmpLink -> {
 			switch (rtmpLink.getSocialProvider()){
 				case google:
 					System.out.println("env google=====> "+rtmpLink.getRtmpLink());

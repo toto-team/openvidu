@@ -94,7 +94,6 @@ public class SessionRestController {
 		SessionProperties sessionProperties;
 		try {
 			sessionProperties = getSessionPropertiesFromParams(params).build();
-			sessionProperties.rtmpLinks().forEach(value-> System.out.println("2:"+value.getSocialProvider().toString()+"===>"+value.getRtmpLink()));
 		} catch (Exception e) {
 			return this.generateErrorResponse(e.getMessage(), "/sessions", HttpStatus.BAD_REQUEST);
 		}
@@ -922,7 +921,7 @@ public class SessionRestController {
 		Integer frameRateFinal = null;
 		Long shmSizeFinal = null;
 		String customLayoutFinal = null;
-
+		List<RtmpLink> rtmpLinksFinal=null;
 		RecordingProperties defaultProps = session.getSessionProperties().defaultRecordingProperties();
 
 		// Default properties configured in Session
@@ -935,7 +934,7 @@ public class SessionRestController {
 		Integer frameRateDefault = defaultProps.frameRate();
 		Long shmSizeDefault = defaultProps.shmSize();
 		String customLayoutDefault = defaultProps.customLayout();
-
+		List<RtmpLink> rtmpLinksDefault =defaultProps.rtmpLinks();
 		// Provided properties through params
 		String sessionIdParam;
 		String nameParam;
@@ -947,6 +946,7 @@ public class SessionRestController {
 		Integer frameRateParam;
 		Long shmSizeParam = null;
 		String customLayoutParam;
+		String rtmpLinksParam;
 
 		try {
 			sessionIdParam = (String) params.get("session");
@@ -957,6 +957,8 @@ public class SessionRestController {
 			recordingLayoutStringParam = (String) params.get("recordingLayout");
 			resolutionParam = (String) params.get("resolution");
 			frameRateParam = (Integer) params.get("frameRate");
+			rtmpLinksParam =(String) params.get("rtmpLinks");
+			System.out.println("++++++ rtmpLinks===>"+params.get("rtmpLinks"));
 			if (params.get("shmSize") != null) {
 				shmSizeParam = Long.parseLong(params.get("shmSize").toString());
 			}
@@ -1062,7 +1064,11 @@ public class SessionRestController {
 			} else {
 				frameRateFinal = RecordingProperties.DefaultValues.frameRate;
 			}
-
+			if(rtmpLinksParam !=null){
+				rtmpLinksFinal=this.parseStringRtmpLinkToList(rtmpLinksParam);
+			}else{
+				rtmpLinksFinal=RecordingProperties.DefaultValues.rtmpLinks;
+			}
 			if (shmSizeParam != null) {
 				if (!sessionManager.formatChecker.isAcceptableRecordingShmSize(shmSizeParam)) {
 					throw new RuntimeException("Wrong \"shmSize\" parameter. Must be 134217728 (128 MB) minimum");
@@ -1091,12 +1097,20 @@ public class SessionRestController {
 			builder.recordingLayout(recordingLayoutFinal);
 			builder.resolution(resolutionFinal);
 			builder.frameRate(frameRateFinal);
+			builder.rtmpLinks(rtmpLinksFinal);
 			builder.shmSize(shmSizeFinal);
 			if (RecordingLayout.CUSTOM.equals(recordingLayoutFinal)) {
 				builder.customLayout(customLayoutFinal);
 			}
 		}
 		return builder;
+	}
+
+	private List<RtmpLink> parseStringRtmpLinkToList(String rtmpLinksParam) {
+		JsonParser jsonParser=new JsonParser();
+		List<RtmpLink> rtmpLinks=new ArrayList<>();
+		jsonParser.parse(rtmpLinksParam).getAsJsonArray().forEach(jsonElement -> rtmpLinks.add(RecordingProperties.getRtmpLink(jsonElement.getAsJsonObject())));
+		return rtmpLinks;
 	}
 
 	protected Token getTokenFromConnectionId(String connectionId, Iterator<Entry<String, Token>> iterator) {
