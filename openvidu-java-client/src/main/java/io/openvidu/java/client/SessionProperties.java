@@ -36,7 +36,6 @@ public class SessionProperties {
 	private String mediaNode;
 	private VideoCodec forcedVideoCodec;
 	private Boolean allowTranscoding;
-	private List<RtmpLink> rtmpLinks;
 
 	/**
 	 * Builder for {@link io.openvidu.java.client.SessionProperties}
@@ -57,7 +56,7 @@ public class SessionProperties {
 		 */
 		public SessionProperties build() {
 			return new SessionProperties(this.mediaMode, this.recordingMode, this.defaultRecordingProperties,
-					this.customSessionId, this.mediaNode, this.forcedVideoCodec, this.allowTranscoding,this.rtmpLinks);
+					this.customSessionId, this.mediaNode, this.forcedVideoCodec, this.allowTranscoding);
 		}
 
 		/**
@@ -161,7 +160,6 @@ public class SessionProperties {
 		this.defaultRecordingProperties = new RecordingProperties.Builder().build();
 		this.customSessionId = "";
 		this.mediaNode = "";
-		this.rtmpLinks=new ArrayList<>();
 	}
 
 	private SessionProperties(MediaMode mediaMode, RecordingMode recordingMode,
@@ -174,13 +172,6 @@ public class SessionProperties {
 		this.mediaNode = mediaNode;
 		this.forcedVideoCodec = forcedVideoCodec;
 		this.allowTranscoding = allowTranscoding;
-	}
-
-	private SessionProperties(MediaMode mediaMode, RecordingMode recordingMode,
-							  RecordingProperties defaultRecordingProperties, String customSessionId, String mediaNode,
-							  VideoCodec forcedVideoCodec, Boolean allowTranscoding,List<RtmpLink> rtmpLinks) {
-		this(mediaMode,recordingMode,defaultRecordingProperties,customSessionId,mediaNode,forcedVideoCodec,allowTranscoding);
-		this.rtmpLinks=rtmpLinks;
 	}
 
 	/**
@@ -250,10 +241,6 @@ public class SessionProperties {
 		return this.allowTranscoding;
 	}
 
-	public List<RtmpLink> rtmpLinks(){
-		return this.rtmpLinks;
-	}
-
 	protected JsonObject toJson() {
 		JsonObject json = new JsonObject();
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
@@ -271,9 +258,6 @@ public class SessionProperties {
 		}
 		if (isTranscodingAllowed() != null) {
 			json.addProperty("allowTranscoding", isTranscodingAllowed());
-		}
-		if(rtmpLinks()!=null){
-			json.addProperty("rtmpLinks", gson.toJson(rtmpLinks()));
 		}
 		return json;
 	}
