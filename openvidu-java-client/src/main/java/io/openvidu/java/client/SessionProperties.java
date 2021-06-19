@@ -49,7 +49,6 @@ public class SessionProperties {
 		private String mediaNode;
 		private VideoCodec forcedVideoCodec = VideoCodec.VP8;
 		private Boolean allowTranscoding = false;
-		private List<RtmpLink> rtmpLinks;
 		/**
 		 * Returns the {@link io.openvidu.java.client.SessionProperties} object properly
 		 * configured
@@ -148,10 +147,6 @@ public class SessionProperties {
 		 * You can take advantage of this property to facilitate the mapping between
 		 * OpenVidu Server 'session' entities and your own 'session' entities.
 		 */
-		public SessionProperties.Builder rtmpLinks(List<RtmpLink> rtmpLinks){
-			this.rtmpLinks=rtmpLinks;
-			return this;
-		}
 	}
 
 	protected SessionProperties() {

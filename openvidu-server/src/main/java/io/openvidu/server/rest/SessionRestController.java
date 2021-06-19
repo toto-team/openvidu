@@ -359,6 +359,7 @@ public class SessionRestController {
 		RecordingProperties recordingProperties;
 		try {
 			recordingProperties = getRecordingPropertiesFromParams(params, session).build();
+			recordingProperties.rtmpLinks().forEach(value-> System.out.println("++++++>>>"+value.getRtmpLink()));
 		} catch (RuntimeException e) {
 			return this.generateErrorResponse(e.getMessage(), "/sessions", HttpStatus.UNPROCESSABLE_ENTITY);
 		} catch (Exception e) {
@@ -716,15 +717,12 @@ public class SessionRestController {
 			String recordingModeString;
 			String forcedVideoCodec;
 			Boolean allowTranscoding;
-			List<RtmpLink> rtmpLinks;
 			try {
 				mediaModeString = (String) params.get("mediaMode");
 				recordingModeString = (String) params.get("recordingMode");
 				customSessionId = (String) params.get("customSessionId");
 				forcedVideoCodec = (String) params.get("forcedVideoCodec");
 				allowTranscoding = (Boolean) params.get("allowTranscoding");
-				rtmpLinks= gson.fromJson((String) params.get("rtmpLinks"),token.getType());
-				rtmpLinks.forEach(value-> System.out.println(value.getSocialProvider().toString()+"=====>"+value.getRtmpLink()));
 			} catch (ClassCastException e) {
 				throw new Exception("Type error in some parameter: " + e.getMessage());
 			}
@@ -759,9 +757,6 @@ public class SessionRestController {
 					builder = builder.allowTranscoding(allowTranscoding);
 				} else {
 					builder = builder.allowTranscoding(openviduConfig.isOpenviduAllowingTranscoding());
-				}
-				if(rtmpLinks!=null){
-					builder=builder.rtmpLinks(rtmpLinks);
 				}
 				JsonObject defaultRecordingPropertiesJson = null;
 				if (params.get("defaultRecordingProperties") != null) {
@@ -1066,6 +1061,8 @@ public class SessionRestController {
 			}
 			if(rtmpLinksParam !=null){
 				rtmpLinksFinal=this.parseStringRtmpLinkToList(rtmpLinksParam);
+			}else if(rtmpLinksDefault !=null){
+				rtmpLinksFinal=rtmpLinksDefault;
 			}else{
 				rtmpLinksFinal=RecordingProperties.DefaultValues.rtmpLinks;
 			}
@@ -1092,12 +1089,11 @@ public class SessionRestController {
 		}
 
 		RecordingProperties.Builder builder = new RecordingProperties.Builder();
-		builder.name(nameFinal).hasAudio(hasAudioFinal).hasVideo(hasVideoFinal).outputMode(outputModeFinal);
+		builder.name(nameFinal).hasAudio(hasAudioFinal).hasVideo(hasVideoFinal).outputMode(outputModeFinal).rtmpLinks(rtmpLinksFinal);
 		if (RecordingUtils.IS_COMPOSED(outputModeFinal) && hasVideoFinal) {
 			builder.recordingLayout(recordingLayoutFinal);
 			builder.resolution(resolutionFinal);
 			builder.frameRate(frameRateFinal);
-			builder.rtmpLinks(rtmpLinksFinal);
 			builder.shmSize(shmSizeFinal);
 			if (RecordingLayout.CUSTOM.equals(recordingLayoutFinal)) {
 				builder.customLayout(customLayoutFinal);
@@ -1110,6 +1106,7 @@ public class SessionRestController {
 		JsonParser jsonParser=new JsonParser();
 		List<RtmpLink> rtmpLinks=new ArrayList<>();
 		jsonParser.parse(rtmpLinksParam).getAsJsonArray().forEach(jsonElement -> rtmpLinks.add(RecordingProperties.getRtmpLink(jsonElement.getAsJsonObject())));
+		rtmpLinks.forEach(value-> System.out.println("-------------->"+value.getRtmpLink()));
 		return rtmpLinks;
 	}
 

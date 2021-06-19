@@ -28,7 +28,7 @@ jobs:
       - name: Exec sh
         run: |
           cd openvidu-server/docker/openvidu-server-kms
-          ./create_image.sh 2.17.0
+          ./create_image.sh 2.17.1
 
       - name: Setup GCP Service Account
         uses: google-github-actions/setup-gcloud@master
@@ -44,6 +44,6 @@ jobs:
           password: ${{ secrets.GCP_SA_KEY }}
 
       - name: Docker tag container
-        run: docker tag openvidu/openvidu-server-kms:2.17.0 gcr.io/${{ secrets.PROJECT_ID }}/openvidu/openvidu-server-kms:2.17.0
+        run: docker tag openvidu/openvidu-server-kms:2.17.1 gcr.io/${{ secrets.PROJECT_ID }}/openvidu/openvidu-server-kms:2.17.1
       - name: Docker push to container registry
-        run: docker push gcr.io/${{ secrets.PROJECT_ID }}/openvidu/openvidu-server-kms:2.17.0
+        run: docker push gcr.io/${{ secrets.PROJECT_ID }}/openvidu/openvidu-server-kms:2.17.1

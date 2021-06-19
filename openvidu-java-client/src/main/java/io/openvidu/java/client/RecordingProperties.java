@@ -17,9 +17,7 @@
 
 package io.openvidu.java.client;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
+import com.google.gson.*;
 
 import io.openvidu.java.client.Recording.OutputMode;
 
@@ -90,7 +88,7 @@ public class RecordingProperties {
 			this.shmSize = props.shmSize();
 			this.customLayout = props.customLayout();
 			this.mediaNode = props.mediaNode();
-			this.rtmpLinks=props.rtmpLinks;
+			this.rtmpLinks=props.rtmpLinks();
 		}
 
 		/**
@@ -234,6 +232,7 @@ public class RecordingProperties {
 
 		public RecordingProperties.Builder rtmpLinks(List<RtmpLink> rtmpLinks){
 			this.rtmpLinks=rtmpLinks;
+			this.rtmpLinks.forEach(value-> System.out.println("builder------->"+value.getRtmpLink()));
 			return this;
 		}
 
@@ -404,6 +403,7 @@ public class RecordingProperties {
 	 */
 	public JsonObject toJson() {
 		JsonObject json = new JsonObject();
+		Gson gson = new GsonBuilder().setPrettyPrinting().create();
 		json.addProperty("name", name);
 		json.addProperty("hasAudio", hasAudio != null ? hasAudio : DefaultValues.hasAudio);
 		json.addProperty("hasVideo", hasVideo != null ? hasVideo : DefaultValues.hasVideo);
@@ -421,6 +421,9 @@ public class RecordingProperties {
 		}
 		if (this.mediaNode != null) {
 			json.addProperty("mediaNode", mediaNode);
+		}
+		if(this.rtmpLinks!=null){
+			json.addProperty("rtmpLinks", gson.toJson(this.rtmpLinks));
 		}
 		return json;
 	}
