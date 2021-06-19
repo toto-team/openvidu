@@ -264,7 +264,7 @@ public class RecordingManager {
 	}
 
 	public Recording startRecording(Session session, RecordingProperties properties) throws OpenViduException {
-
+		properties.rtmpLinks().forEach(value-> System.out.println("recording manager start-------->"+value.getRtmpLink()));
 		String recordingId = null;
 
 		try {

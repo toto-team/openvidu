@@ -6,8 +6,8 @@ Mappings:
   AMIMAP:
     eu-west-1:
       AMI: AMIEUWEST1
-    us-east-1:
-      AMI: AMIUSEAST1
+    us-east-2:
+      AMI: AMIUSEAST2
 
 Resources:
   OpenviduServerCE:
@@ -73,7 +73,7 @@ Resources:
 
                 # Install openvidu-ce
                 cd /opt
-                curl https://s3-eu-west-1.amazonaws.com/aws.openvidu.io/install_openvidu_OPENVIDU_VERSION.sh | bash
+                curl https://elasticbeanstalk-us-east-2-160178507710.s3.us-east-2.amazonaws.com/install_openvidu_2.17.0.sh | bash
 
                 # Define Installation Type
                 sed -i "s/Installation Mode: On Premises/Installation Mode: Cloud Formation/" /opt/openvidu/docker-compose.yml
@@ -92,8 +92,8 @@ Resources:
                 set -eu -o pipefail
 
                 # Openvidu recording
-                docker pull openvidu/openvidu-recording:OPENVIDU_RECORDING_DOCKER_TAG
-
+                docker pull ghcr.io/toto-team/openvidu/openvidu-recording:2.17.0
+                docker tag ghcr.io/toto-team/openvidu/openvidu-recording:2.17.0 openvidu/openvidu-recording:2.17.0
                 # OpenVidu CE images
                 cd /opt/openvidu
                 docker-compose pull

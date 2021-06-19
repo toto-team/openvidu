@@ -118,7 +118,7 @@ Parameters:
 #start_mappings
 Mappings:
   OVAMIMAP:
-    eu-west-1:
+    us-east-2:
       AMI: OV_AMI_ID
 #end_mappings
 
@@ -351,11 +351,11 @@ Resources:
       EIP: !Ref PublicElasticIP
 
   WaitCondition:
-    Type: 'AWS::CloudFormation::WaitCondition'
-    CreationPolicy:
-      ResourceSignal:
-        Timeout: PT30M
-        Count: '1'
+      Type: 'AWS::CloudFormation::WaitCondition'
+      CreationPolicy:
+        ResourceSignal:
+          Timeout: PT30M
+          Count: '1'
 
   WebServerSecurityGroup:
     Type: 'AWS::EC2::SecurityGroup'

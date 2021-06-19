@@ -251,9 +251,6 @@ public class Session implements SessionInterface {
 			json.addProperty("forcedVideoCodec", this.sessionProperties.forcedVideoCodec().name());
 		}
 		json.addProperty("allowTranscoding", this.sessionProperties.isTranscodingAllowed());
-		if(this.sessionProperties.rtmpLink()!=null){
-			json.addProperty("rtmpLink", this.sessionProperties.rtmpLink());
-		}
 		return json;
 	}
 

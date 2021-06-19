@@ -1,0 +1,49 @@
+name: OV server kms docker image
+
+on: push
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: mvn install for ov
+        run: |
+          mvn clean install -DskipTests
+      - name: mvn install for ov client
+        run: |
+          cd openvidu-client
+          mvn clean install -DskipTests
+      - name: mvn install for ov java client
+        run: |
+            cd openvidu-java-client
+            mvn clean install -DskipTests
+      - name: mvn install for ov server
+        run: |
+          cd openvidu-server
+          mvn clean install -DskipTests
+
+      - name: Exec sh
+        run: |
+          cd openvidu-server/docker/openvidu-server-kms
+          ./create_image.sh 2.17.1
+
+      - name: Setup GCP Service Account
+        uses: google-github-actions/setup-gcloud@master
+        with:
+          version: 'latest'
+          project_id: ${{ secrets.PROJECT_ID }}
+          service_account_key: ${{ secrets.GCP_SA_KEY }}
+      - name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          registry: gcr.io
+          username: _json_key
+          password: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Docker tag container
+        run: docker tag openvidu/openvidu-server-kms:2.17.1 gcr.io/${{ secrets.PROJECT_ID }}/openvidu/openvidu-server-kms:2.17.1
+      - name: Docker push to container registry
+        run: docker push gcr.io/${{ secrets.PROJECT_ID }}/openvidu/openvidu-server-kms:2.17.1

@@ -18,14 +18,14 @@
 package io.openvidu.server.rest;
 
 import java.net.MalformedURLException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
+import com.google.common.reflect.TypeToken;
+import com.google.gson.stream.JsonReader;
+import io.openvidu.java.client.*;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,17 +51,7 @@ import com.google.gson.JsonParser;
 import io.openvidu.client.OpenViduException;
 import io.openvidu.client.OpenViduException.Code;
 import io.openvidu.client.internal.ProtocolElements;
-import io.openvidu.java.client.ConnectionProperties;
-import io.openvidu.java.client.ConnectionType;
-import io.openvidu.java.client.KurentoOptions;
-import io.openvidu.java.client.MediaMode;
-import io.openvidu.java.client.OpenViduRole;
 import io.openvidu.java.client.Recording.OutputMode;
-import io.openvidu.java.client.RecordingLayout;
-import io.openvidu.java.client.RecordingMode;
-import io.openvidu.java.client.RecordingProperties;
-import io.openvidu.java.client.SessionProperties;
-import io.openvidu.java.client.VideoCodec;
 import io.openvidu.server.config.OpenviduConfig;
 import io.openvidu.server.core.EndReason;
 import io.openvidu.server.core.IdentifierPrefixes;
@@ -369,6 +359,7 @@ public class SessionRestController {
 		RecordingProperties recordingProperties;
 		try {
 			recordingProperties = getRecordingPropertiesFromParams(params, session).build();
+			recordingProperties.rtmpLinks().forEach(value-> System.out.println("++++++>>>"+value.getRtmpLink()));
 		} catch (RuntimeException e) {
 			return this.generateErrorResponse(e.getMessage(), "/sessions", HttpStatus.UNPROCESSABLE_ENTITY);
 		} catch (Exception e) {
@@ -718,21 +709,20 @@ public class SessionRestController {
 
 		SessionProperties.Builder builder = new SessionProperties.Builder();
 		String customSessionId = null;
-
+		Gson gson = new GsonBuilder().setPrettyPrinting().create();
+		TypeToken<List<RtmpLink>> token = new TypeToken<List<RtmpLink>>() {};
 		if (params != null) {
 
 			String mediaModeString;
 			String recordingModeString;
 			String forcedVideoCodec;
 			Boolean allowTranscoding;
-			String rtmpLink;
 			try {
 				mediaModeString = (String) params.get("mediaMode");
 				recordingModeString = (String) params.get("recordingMode");
 				customSessionId = (String) params.get("customSessionId");
 				forcedVideoCodec = (String) params.get("forcedVideoCodec");
 				allowTranscoding = (Boolean) params.get("allowTranscoding");
-				rtmpLink=(String) params.get("rtmpLink");
 			} catch (ClassCastException e) {
 				throw new Exception("Type error in some parameter: " + e.getMessage());
 			}
@@ -767,9 +757,6 @@ public class SessionRestController {
 					builder = builder.allowTranscoding(allowTranscoding);
 				} else {
 					builder = builder.allowTranscoding(openviduConfig.isOpenviduAllowingTranscoding());
-				}
-				if(rtmpLink!=null){
-					builder=builder.rtmpLink(rtmpLink);
 				}
 				JsonObject defaultRecordingPropertiesJson = null;
 				if (params.get("defaultRecordingProperties") != null) {
@@ -929,7 +916,7 @@ public class SessionRestController {
 		Integer frameRateFinal = null;
 		Long shmSizeFinal = null;
 		String customLayoutFinal = null;
-
+		List<RtmpLink> rtmpLinksFinal=null;
 		RecordingProperties defaultProps = session.getSessionProperties().defaultRecordingProperties();
 
 		// Default properties configured in Session
@@ -942,7 +929,7 @@ public class SessionRestController {
 		Integer frameRateDefault = defaultProps.frameRate();
 		Long shmSizeDefault = defaultProps.shmSize();
 		String customLayoutDefault = defaultProps.customLayout();
-
+		List<RtmpLink> rtmpLinksDefault =defaultProps.rtmpLinks();
 		// Provided properties through params
 		String sessionIdParam;
 		String nameParam;
@@ -954,6 +941,7 @@ public class SessionRestController {
 		Integer frameRateParam;
 		Long shmSizeParam = null;
 		String customLayoutParam;
+		String rtmpLinksParam;
 
 		try {
 			sessionIdParam = (String) params.get("session");
@@ -964,6 +952,8 @@ public class SessionRestController {
 			recordingLayoutStringParam = (String) params.get("recordingLayout");
 			resolutionParam = (String) params.get("resolution");
 			frameRateParam = (Integer) params.get("frameRate");
+			rtmpLinksParam =(String) params.get("rtmpLinks");
+			System.out.println("++++++ rtmpLinks===>"+params.get("rtmpLinks"));
 			if (params.get("shmSize") != null) {
 				shmSizeParam = Long.parseLong(params.get("shmSize").toString());
 			}
@@ -1069,7 +1059,13 @@ public class SessionRestController {
 			} else {
 				frameRateFinal = RecordingProperties.DefaultValues.frameRate;
 			}
-
+			if(rtmpLinksParam !=null){
+				rtmpLinksFinal=this.parseStringRtmpLinkToList(rtmpLinksParam);
+			}else if(rtmpLinksDefault !=null){
+				rtmpLinksFinal=rtmpLinksDefault;
+			}else{
+				rtmpLinksFinal=RecordingProperties.DefaultValues.rtmpLinks;
+			}
 			if (shmSizeParam != null) {
 				if (!sessionManager.formatChecker.isAcceptableRecordingShmSize(shmSizeParam)) {
 					throw new RuntimeException("Wrong \"shmSize\" parameter. Must be 134217728 (128 MB) minimum");
@@ -1093,7 +1089,7 @@ public class SessionRestController {
 		}
 
 		RecordingProperties.Builder builder = new RecordingProperties.Builder();
-		builder.name(nameFinal).hasAudio(hasAudioFinal).hasVideo(hasVideoFinal).outputMode(outputModeFinal);
+		builder.name(nameFinal).hasAudio(hasAudioFinal).hasVideo(hasVideoFinal).outputMode(outputModeFinal).rtmpLinks(rtmpLinksFinal);
 		if (RecordingUtils.IS_COMPOSED(outputModeFinal) && hasVideoFinal) {
 			builder.recordingLayout(recordingLayoutFinal);
 			builder.resolution(resolutionFinal);
@@ -1104,6 +1100,14 @@ public class SessionRestController {
 			}
 		}
 		return builder;
+	}
+
+	private List<RtmpLink> parseStringRtmpLinkToList(String rtmpLinksParam) {
+		JsonParser jsonParser=new JsonParser();
+		List<RtmpLink> rtmpLinks=new ArrayList<>();
+		jsonParser.parse(rtmpLinksParam).getAsJsonArray().forEach(jsonElement -> rtmpLinks.add(RecordingProperties.getRtmpLink(jsonElement.getAsJsonObject())));
+		rtmpLinks.forEach(value-> System.out.println("-------------->"+value.getRtmpLink()));
+		return rtmpLinks;
 	}
 
 	protected Token getTokenFromConnectionId(String connectionId, Iterator<Entry<String, Token>> iterator) {

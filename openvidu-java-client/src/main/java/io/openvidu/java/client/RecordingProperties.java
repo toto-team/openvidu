@@ -17,9 +17,12 @@
 
 package io.openvidu.java.client;
 
-import com.google.gson.JsonObject;
+import com.google.gson.*;
 
 import io.openvidu.java.client.Recording.OutputMode;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * See
@@ -35,6 +38,7 @@ public class RecordingProperties {
 		public static final String resolution = "1280x720";
 		public static final Integer frameRate = 25;
 		public static final Long shmSize = 536870912L;
+		public static final List<RtmpLink> rtmpLinks=new ArrayList<>();
 	}
 
 	// For all
@@ -51,6 +55,8 @@ public class RecordingProperties {
 	private String customLayout;
 	// For OpenVidu Pro
 	private String mediaNode;
+	//For streaming to social media
+	private List<RtmpLink> rtmpLinks;
 
 	/**
 	 * Builder for {@link io.openvidu.java.client.RecordingProperties}
@@ -67,7 +73,7 @@ public class RecordingProperties {
 		private Long shmSize;
 		private String customLayout;
 		private String mediaNode;
-
+		private List<RtmpLink> rtmpLinks;
 		public Builder() {
 		}
 
@@ -82,6 +88,7 @@ public class RecordingProperties {
 			this.shmSize = props.shmSize();
 			this.customLayout = props.customLayout();
 			this.mediaNode = props.mediaNode();
+			this.rtmpLinks=props.rtmpLinks();
 		}
 
 		/**
@@ -90,7 +97,7 @@ public class RecordingProperties {
 		public RecordingProperties build() {
 			return new RecordingProperties(this.name, this.hasAudio, this.hasVideo, this.outputMode,
 					this.recordingLayout, this.resolution, this.frameRate, this.shmSize, this.customLayout,
-					this.mediaNode);
+					this.mediaNode,this.rtmpLinks);
 		}
 
 		/**
@@ -223,11 +230,17 @@ public class RecordingProperties {
 			return this;
 		}
 
+		public RecordingProperties.Builder rtmpLinks(List<RtmpLink> rtmpLinks){
+			this.rtmpLinks=rtmpLinks;
+			this.rtmpLinks.forEach(value-> System.out.println("builder------->"+value.getRtmpLink()));
+			return this;
+		}
+
 	}
 
 	protected RecordingProperties(String name, Boolean hasAudio, Boolean hasVideo, Recording.OutputMode outputMode,
 			RecordingLayout layout, String resolution, Integer frameRate, Long shmSize, String customLayout,
-			String mediaNode) {
+			String mediaNode,List<RtmpLink> rtmpLinks) {
 		this.name = name != null ? name : "";
 		this.hasAudio = hasAudio != null ? hasAudio : DefaultValues.hasAudio;
 		this.hasVideo = hasVideo != null ? hasVideo : DefaultValues.hasVideo;
@@ -243,6 +256,7 @@ public class RecordingProperties {
 			}
 		}
 		this.mediaNode = mediaNode;
+		this.rtmpLinks=rtmpLinks;
 	}
 
 	/**
@@ -381,11 +395,15 @@ public class RecordingProperties {
 		return this.mediaNode;
 	}
 
+	public List<RtmpLink> rtmpLinks(){
+		return this.rtmpLinks;
+	}
 	/**
 	 * @hidden
 	 */
 	public JsonObject toJson() {
 		JsonObject json = new JsonObject();
+		Gson gson = new GsonBuilder().setPrettyPrinting().create();
 		json.addProperty("name", name);
 		json.addProperty("hasAudio", hasAudio != null ? hasAudio : DefaultValues.hasAudio);
 		json.addProperty("hasVideo", hasVideo != null ? hasVideo : DefaultValues.hasVideo);
@@ -403,6 +421,9 @@ public class RecordingProperties {
 		}
 		if (this.mediaNode != null) {
 			json.addProperty("mediaNode", mediaNode);
+		}
+		if(this.rtmpLinks!=null){
+			json.addProperty("rtmpLinks", gson.toJson(this.rtmpLinks));
 		}
 		return json;
 	}
@@ -464,7 +485,19 @@ public class RecordingProperties {
 				builder.mediaNode(mediaNodeId);
 			}
 		}
+		if(json.has("rtmpLinks")){
+			List<RtmpLink> rtmpLinks=new ArrayList<>();
+			json.getAsJsonArray("rtmpLinks").forEach(jsonElement -> rtmpLinks.add(getRtmpLink(jsonElement.getAsJsonObject())));
+			builder.rtmpLinks(rtmpLinks);
+		}
 		return builder.build();
+	}
+
+	public static RtmpLink getRtmpLink(JsonObject jsonObject) {
+		return new RtmpLink(
+				SocialProvider.valueOf(jsonObject.get("socialProvider").getAsString()),
+				jsonObject.get("rtmpLink").getAsString()
+		);
 	}
 
 }
