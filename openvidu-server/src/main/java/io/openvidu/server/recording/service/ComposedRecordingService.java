@@ -314,7 +314,7 @@ public class ComposedRecordingService extends RecordingService {
 				this.recordingManager.sessionHandler.sendRecordingStoppedNotification(session, recording, reason);
 			}
 
-			downloadComposedRecording(session, recording, reason);
+			//downloadComposedRecording(session, recording, reason);
 		}
 
 		return recording;
