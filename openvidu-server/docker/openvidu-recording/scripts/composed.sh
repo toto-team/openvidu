@@ -67,7 +67,7 @@ fi
   DISPLAY_NUM=$(echo $XVFB_ARGS | sed 's/Xvfb :\([0-9]\+\).*/\1/')
   echo "Display in use -> :$DISPLAY_NUM"
   echo "----------------------------------------"
-
+### ffmpeg -re -y -i kimadima.mp4  -c:a copy -ac 1 -ar 44100 -b:a 96k -vcodec libx264 -pix_fmt yuv420p -tune zerolatency -f flv -maxrate 2000k -preset veryfast rtmp://a.rtmp.youtube.com/live2/qp90-r4p8-6z07-kayg-a0ek
   sleep 2
   mkdir /recordings/$VIDEO_ID
   touch /recordings/$VIDEO_ID/$VIDEO_NAME.$VIDEO_FORMAT
@@ -75,10 +75,10 @@ fi
   if [[ "$ONLY_VIDEO" == true ]]
     then
       # Do not record audio
-      <./stop ffmpeg -y -f x11grab -draw_mouse 0 -framerate $FRAMERATE -video_size $RESOLUTION -i :$DISPLAY_NUM -c:v libx264 -b:v 4000k -preset veryfast -crf 10 -maxrate 4000k -bufsize 4000k -g 60 -refs 4 -qmin 4 -pix_fmt yuv420p -filter:v fps=$FRAMERATE -f flv $RTMP_YOUTUBE_LINK -f flv $RTMP_FACEBOOK_LINK
+      <./stop ffmpeg -y -f x11grab -draw_mouse 0 -framerate $FRAMERATE -video_size $RESOLUTION -i :$DISPLAY_NUM -c:v libx264 -b:v 4000k -preset veryfast -crf 10 -maxrate 4000k -bufsize 4000k -g 60 -refs 4 -qmin 4 -pix_fmt yuv420p -filter:v fps=$FRAMERATE -f flv $RTMP_YOUTUBE_LINK  -c:a copy -ac 1 -ar 44100 -b:a 96k -vcodec libx264 -acodec aac  -pix_fmt yuv420p -vf scale=1080:-1 -r 30 -g 60 -tune zerolatency -f flv -maxrate 2000k -preset veryfast $RTMP_FACEBOOK_LINK
     else
       # Record audio  ("-f alsa -i pulse [...] -c:a aac")
-      <./stop ffmpeg -y -f alsa -i pulse -f x11grab -draw_mouse 0 -framerate $FRAMERATE -video_size $RESOLUTION -i :$DISPLAY_NUM -c:a aac -c:v libx264 -b:v 4000k -preset veryfast -crf 10 -maxrate 4000k -bufsize 4000k -g 60 -refs 4 -qmin 4 -pix_fmt yuv420p -filter:v fps=$FRAMERATE -f flv $RTMP_YOUTUBE_LINK -f flv $RTMP_FACEBOOK_LINK
+      <./stop ffmpeg -y -f alsa -i pulse -f x11grab -draw_mouse 0 -framerate $FRAMERATE -video_size $RESOLUTION -i :$DISPLAY_NUM -c:a aac -c:v libx264 -b:v 4000k -preset veryfast -crf 10 -maxrate 4000k -bufsize 4000k -g 60 -refs 4 -qmin 4 -pix_fmt yuv420p -filter:v fps=$FRAMERATE -f flv $RTMP_YOUTUBE_LINK -c:a copy -ac 1 -ar 44100 -b:a 96k -vcodec libx264 -acodec aac  -pix_fmt yuv420p -vf scale=1080:-1 -r 30 -g 60 -tune zerolatency -f flv -maxrate 2000k -preset veryfast $RTMP_FACEBOOK_LINK
   fi
 
   ### Generate video report file ###

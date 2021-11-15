@@ -127,7 +127,7 @@ public class RecordingManager {
 	private ScheduledExecutorService automaticRecordingStopExecutor = Executors
 			.newScheduledThreadPool(Runtime.getRuntime().availableProcessors());
 
-	public static final String IMAGE_NAME = "openvidu/openvidu-recording";
+	public static final String IMAGE_NAME = "ghcr.io/toto-team/openvidu/openvidu-recording";
 
 	private static final List<EndReason> LAST_PARTICIPANT_LEFT_REASONS = Arrays
 			.asList(new EndReason[] { EndReason.disconnect, EndReason.forceDisconnectByUser,
