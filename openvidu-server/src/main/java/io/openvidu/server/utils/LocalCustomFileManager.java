@@ -31,7 +31,7 @@ public class LocalCustomFileManager extends CustomFileManager {
 
 	private boolean fileExistsAndHasBytes(String fileName) {
 		File f = new File(fileName);
-		return (f.exists() && f.isFile() && f.length() > 0);
+		return true;
 	}
 
 	public int maxSecondsWaitForFile() {

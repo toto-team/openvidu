@@ -12,7 +12,7 @@ fi
   URL=${URL:-https://www.youtube.com/watch?v=JMuzlEQz3uo}
   ONLY_VIDEO=${ONLY_VIDEO:-false}
   RESOLUTION=${RESOLUTION:-1280x720}
-  FRAMERATE=${FRAMERATE:-25}
+  FRAMERATE=${FRAMERATE:-30}
   WIDTH="$(cut -d'x' -f1 <<< $RESOLUTION)"
   HEIGHT="$(cut -d'x' -f2 <<< $RESOLUTION)"
   VIDEO_ID=${VIDEO_ID:-video}
@@ -32,7 +32,6 @@ fi
   export VIDEO_FORMAT
   export RECORDING_JSON
   export RTMP_YOUTUBE_LINK
-  export RTMP_FACEBOOK_LINK
   echo "==== Loaded Environment Variables ======================="
   env
   echo "========================================================="
@@ -74,14 +73,14 @@ fi
   if [[ "$ONLY_VIDEO" == true ]]
     then
       # Do not record audio
-      <./stop ffmpeg -y -f x11grab -draw_mouse 0 -framerate $FRAMERATE -video_size $RESOLUTION -i :$DISPLAY_NUM -c:v libx264 -preset ultrafast -crf 28 -refs 4 -qmin 4 -pix_fmt yuv420p -filter:v fps=$FRAMERATE "/recordings/$VIDEO_ID/$VIDEO_NAME.$VIDEO_FORMAT" -f flv $RTMP_YOUTUBE_LINK -f flv $RTMP_FACEBOOK_LINK
+      <./stop ffmpeg -y -f x11grab -draw_mouse 0 -framerate $FRAMERATE -video_size $RESOLUTION -i :$DISPLAY_NUM -c:v libx264 -preset ultrafast -crf 28 -refs 4 -qmin 4 -pix_fmt yuv420p -filter:v fps=$FRAMERATE "/recordings/$VIDEO_ID/$VIDEO_NAME.$VIDEO_FORMAT" -f flv $RTMP_YOUTUBE_LINK
     else
       # Record audio  ("-f alsa -i pulse [...] -c:a aac")
-      <./stop ffmpeg -y -f alsa -i pulse -f x11grab -draw_mouse 0 -framerate $FRAMERATE -video_size $RESOLUTION -i :$DISPLAY_NUM -c:a aac -c:v libx264 -preset ultrafast -crf 28 -refs 4 -qmin 4 -pix_fmt yuv420p -filter:v fps=$FRAMERATE "/recordings/$VIDEO_ID/$VIDEO_NAME.$VIDEO_FORMAT" -f flv $RTMP_YOUTUBE_LINK -f flv $RTMP_FACEBOOK_LINK
+      <./stop ffmpeg -y -f alsa -i pulse -f x11grab -draw_mouse 0 -framerate $FRAMERATE -video_size $RESOLUTION -i :$DISPLAY_NUM -c:a aac -c:v libx264 -preset ultrafast -crf 28 -refs 4 -qmin 4 -pix_fmt yuv420p -filter:v fps=$FRAMERATE "/recordings/$VIDEO_ID/$VIDEO_NAME.$VIDEO_FORMAT" -f flv $RTMP_YOUTUBE_LINK
   fi
 
   ### Generate video report file ###
-  ffprobe -v quiet -print_format json -show_format -show_streams /recordings/$VIDEO_ID/$VIDEO_NAME.$VIDEO_FORMAT > /recordings/$VIDEO_ID/$VIDEO_ID.info
+ touch /recordings/$VIDEO_ID/$VIDEO_ID.info
 
   ### Update Recording json data ###
 
@@ -107,7 +106,7 @@ fi
 
   MIDDLE_TIME=$(ffmpeg -i /recordings/$VIDEO_ID/$VIDEO_NAME.$VIDEO_FORMAT 2>&1 | grep Duration | awk '{print $2}' | tr -d , | awk -F ':' '{print ($3+$2*60+$1*3600)/2}')
   THUMBNAIL_HEIGHT=$((480*$HEIGHT/$WIDTH))
-  ffmpeg -ss $MIDDLE_TIME -i /recordings/$VIDEO_ID/$VIDEO_NAME.$VIDEO_FORMAT -vframes 1 -s 480x$THUMBNAIL_HEIGHT /recordings/$VIDEO_ID/$VIDEO_ID.jpg
+  touch /recordings/$VIDEO_ID/$VIDEO_ID.jpg
 
   ### Change permissions to all generated files ###
 
