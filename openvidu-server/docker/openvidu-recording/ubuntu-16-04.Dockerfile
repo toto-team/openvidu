@@ -29,7 +29,7 @@ COPY entrypoint.sh scripts/composed.sh scripts/composed_quick_start.sh ./
 COPY utils/xvfb-run-safe /usr/local/bin 
 
 # Prepare scripts and folders
-RUN chmod +x /entrypoint.sh /composed.sh /composed_quick_start.sh \
+RUN chmod +x /entrypoint.sh /composed.sh /stunnelconf.sh /composed_quick_start.sh \
   && chmod +x /usr/local/bin/xvfb-run-safe \
   && mkdir /recordings \
   && chmod 777 /recordings
