@@ -16,7 +16,7 @@ jobs:
           ./create_image.sh ubuntu-20-04 86.0.4240.193-1 2.17.0
 
       - name: Setup GCP Service Account
-        uses: google-github-actions/setup-gcloud@master
+        uses: google-github-actions/setup-gcloud@v0
         with:
           version: 'latest'
           project_id: ${{ secrets.PROJECT_ID }}
