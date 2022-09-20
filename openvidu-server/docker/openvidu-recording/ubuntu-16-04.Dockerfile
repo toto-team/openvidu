@@ -25,7 +25,7 @@ RUN adduser root pulse-access
 # Clean
 RUN apt-get autoclean
 
-COPY entrypoint.sh scripts/composed.sh scripts/composed_quick_start.sh ./
+COPY entrypoint.sh stunnelconf.sh scripts/composed.sh scripts/composed_quick_start.sh ./
 COPY utils/xvfb-run-safe /usr/local/bin 
 
 # Prepare scripts and folders

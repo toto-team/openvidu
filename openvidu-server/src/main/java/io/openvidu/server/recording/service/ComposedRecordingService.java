@@ -158,18 +158,14 @@ public class ComposedRecordingService extends RecordingService {
 		envs.add("VIDEO_NAME=" + properties.name());
 		envs.add("VIDEO_FORMAT=mkv");
 		envs.add("RECORDING_JSON=" + recording.toJson(true).toString());
-		properties.rtmpLinks().forEach(rtmpLink -> {
-			switch (rtmpLink.getSocialProvider()){
-				case google:
-					System.out.println("env google=====> "+rtmpLink.getRtmpLink());
-					envs.add("RTMP_YOUTUBE_LINK=" + rtmpLink.getRtmpLink());
-					break;
-				case facebook:
-					System.out.println("env facebook=====> "+rtmpLink.getRtmpLink());
-					envs.add("RTMP_FACEBOOK_LINK=" + rtmpLink.getRtmpLink());
-					break;
-			}
-		});
+		String rtmpLinks = "( ";
+		for (RtmpLink rtmpLink:properties.rtmpLinks()){
+			rtmpLinks+="'"+rtmpLink.getRtmpLink()+"'";
+		}
+		rtmpLinks+=" )";
+		envs.add("RTMP_LINKS="+rtmpLinks);
+		log.info("RTMP_LINKS---->"+rtmpLinks);
+
 		log.info(recording.toJson(true).toString());
 		log.info("Recorder connecting to url {}", layoutUrl);
 
